@@ -1,155 +1,68 @@
-п»ї#pragma once
+#pragma once  //директива препроцессора исключает множественное подключение файла
 #include <iostream>
-#include <Windows.h>
-#include <string.h>
-#include <time.h>
-#include <stdlib.h>
-#include <iomanip>
+#include <string>		//содержит класс string
+#include <Windows.h>	//для изменения кодировок
 using namespace std;
-inline void SetColor(int color) { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color); }
-inline void ResetColor() { SetColor(7); }
-inline int RandomColor() { return 1 + rand() % 15; }
-inline void SetRandomColor() { SetColor(RandomColor()); }
-struct Student
-{
-    char surname[50];
-    char group[20];
-    //Р·Р°С‡С‘С‚С‹
-    unsigned int test1 : 1;
-    unsigned int test2 : 1;
-    unsigned int test3 : 1;
-    //СЌРєР·Р°РјРµРЅС‹ 
-    unsigned int exam1 : 3;
-    unsigned int exam2 : 3;
-    unsigned int exam3 : 3;
-};
-int InputValue(int min, int max, const char* prompt)
-{
-    int OCP = GetConsoleOutputCP();
-    int CP = GetConsoleCP();
-    if (OCP != 1251) SetConsoleOutputCP(1251);
-    if (CP != 1251) SetConsoleCP(1251);
-    int temp;
-    do {
-        SetRandomColor();
-        cout << prompt;
-        ResetColor();
-        cin >> temp;
-        if (cin.fail()) {
-            cin.clear(); 
-            cin.ignore(LLONG_MAX, '\n'); 
-            SetColor(12); 
-            cout << "РћС€РёР±РєР°! Р’РІРµРґРёС‚Рµ С‡РёСЃР»Рѕ.\n";
-            ResetColor();
-            if (OCP != 1251) SetConsoleOutputCP(OCP);
-            if (CP != 1251) SetConsoleCP(CP);
-            temp = min - 1; 
-        }
-        else if (temp < min || temp > max) { // РµСЃР»Рё С‡РёСЃР»Рѕ РІРЅРµ РґРёР°РїР°Р·РѕРЅР°
-            cin.ignore(LLONG_MAX, '\n');
-            SetColor(12);
-            cout << "РћС€РёР±РєР°! Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ РѕС‚ " << min << " РґРѕ " << max << ".\n";
-            ResetColor();
-        }
-        else {
-            cin.ignore(LLONG_MAX, '\n');
-            break;
-        }
-    } while (temp < min || temp > max);
-    if (OCP != 1251) SetConsoleOutputCP(OCP);
-    if (CP != 1251) SetConsoleCP(CP);
-    return temp;
-}
-void InputStudent(Student& s)
-{
-    int OCP = GetConsoleOutputCP();
-    int CP = GetConsoleCP();
-    if (OCP != 1251) SetConsoleOutputCP(1251);
-    if (CP != 1251) SetConsoleCP(1251);
-    SetRandomColor();
-    cout << "Р¤Р°РјРёР»РёСЏ: ";
-    ResetColor();
-    cin.getline(s.surname, 50);
-    SetRandomColor();
-    cout << "Р“СЂСѓРїРїР°: ";
-    ResetColor();
-    cin.getline(s.group, 20);
-    SetRandomColor();
-    cout << "Р—Р°С‡РµС‚С‹ (0 - РЅРµ СЃРґР°Р», 1 - СЃРґР°Р») \n";
-    ResetColor();
-    s.test1 = InputValue(0, 1, "Р—Р°С‡РµС‚ 1: ");
-    s.test2 = InputValue(0, 1, "Р—Р°С‡РµС‚ 2: ");
-    s.test3 = InputValue(0, 1, "Р—Р°С‡РµС‚ 3: ");
-    SetRandomColor();
-    cout << "Р­РєР·Р°РјРµРЅС‹ (РѕС†РµРЅРєРё 2-5) \n";
-    ResetColor();
-    s.exam1 = InputValue(2, 5, "Р­РєР·Р°РјРµРЅ 1: ");
-    s.exam2 = InputValue(2, 5, "Р­РєР·Р°РјРµРЅ 2: ");
-    s.exam3 = InputValue(2, 5, "Р­РєР·Р°РјРµРЅ 3: ");
-    if (OCP != 1251) SetConsoleOutputCP(OCP);
-    if (CP != 1251) SetConsoleCP(CP);
-}
-int MaxLengthSurname(const Student students[], int count) {
-    int maxLen = strlen("Р¤Р°РјРёР»РёСЏ"); 
-    for (int i = 0; i < count; i++) {
-        int len = strlen(students[i].surname);
-        if (len > maxLen) maxLen = len;
-    }
-    return maxLen;
-}
-int MaxLengthGroup(const Student students[], int count) {
-    int maxLen = strlen("Р“СЂСѓРїРїР°");
-    for (int i = 0; i < count; i++) {
-        int len = strlen(students[i].group);
-        if (len > maxLen) maxLen = len;
-    }
-    return maxLen;
-}
-void PrintCentered(const char* text, int width) {
-    int OCP = GetConsoleOutputCP();
-    if (OCP != 1251) SetConsoleOutputCP(1251);
-    int len = strlen(text);
-    int padding = (width - len) / 2;
-    int extra = (width - len) % 2; // РµСЃР»Рё С€РёСЂРёРЅР° РЅРµС‡РµС‚РЅР°СЏ
-    for (int i = 0; i < padding; i++) cout << ' ';
-    cout << text;
-    for (int i = 0; i < padding + extra; i++) cout << ' ';
-    if (OCP != 1251) SetConsoleOutputCP(OCP);
-}
-void PrintLine(int surnameWidth, int groupWidth) {
-    int OCP = GetConsoleOutputCP();
-    if (OCP != 1251) SetConsoleOutputCP(1251);
-    cout << "+" << string(surnameWidth + 2, '-') << "+" << string(groupWidth + 2, '-') << "+----+----+----+----+----+----+\n";
-    if (OCP != 1251) SetConsoleOutputCP(OCP);
+void SetColor(int color);
+void ResetColor();
+void SetRandomColor();
 
-}
-void PrintHeader(const Student students[], int count)
+//класс описывающий студента
+class Student
 {
-    int OCP = GetConsoleOutputCP();
-    if (OCP != 1251) SetConsoleOutputCP(1251);
-    int surnameWidth = MaxLengthSurname(students, count);
-    int groupWidth = MaxLengthGroup(students, count);
-    PrintLine(surnameWidth, groupWidth);
-    cout << "| ";
-    SetRandomColor();
-    PrintCentered("Р¤Р°РјРёР»РёСЏ", surnameWidth);
-    ResetColor();
-    cout << " | ";
-    SetRandomColor();
-    PrintCentered("Р“СЂСѓРїРїР°", groupWidth);
-    ResetColor();
-    SetRandomColor();
-    cout << " | Р—1 | Р—2 | Р—3 | Р­1 | Р­2 | Р­3 |\n";
-    ResetColor();
-    PrintLine(surnameWidth, groupWidth);
-    if (OCP != 1251) SetConsoleOutputCP(OCP);
-}
-void PrintRow(const Student& s, int surnameWidth, int groupWidth)
-{
-    int OCP = GetConsoleOutputCP();
-    if (OCP != 1251) SetConsoleOutputCP(1251);
-    SetRandomColor();
-    cout << "| " << setw(surnameWidth) << left << s.surname << " | " << setw(groupWidth) << left << s.group << " | " << setw(2) << s.test1 << " | " << setw(2) << s.test2 << " | " << setw(2) << s.test3  << " | " << setw(2) << s.exam1 << " | " << setw(2) << s.exam2 << " | " << setw(2) << s.exam3 << " |\n";
-    ResetColor();
-    if (OCP != 1251) SetConsoleOutputCP(OCP);
-}
+	//Поля:
+	string Last_Name;								//Фамилия
+	string Name;									//Имя
+	string Middle_Name;								//Отчество
+	string Group;									//Группа
+	int Age;										//Возраст
+	string Gender;									//Пол
+	string Phone;									//Телефон
+	int Count_Grades;								//Кол-во оценок
+	int* Grades;									//Динамический массив оценок(указатель на динамически выделенную память)
+	float GPA;										//Средний балл оценок
+	static int Count;								//Счетчик текущего кол-ва студентов(объектов класса Student)
+	static int Count_ID;							//Счетчик для создания уникальных идентификаторов
+	const int ID;									//Идентификатор студента
+
+public:
+	//Прототипы методов:
+	//Student(string, string, string, string, int=0);		//Конструктор с параметрами(Ф,И,О,Г,К_О)
+	//Если может не быть отчества, тогда будет пустая строка вместо отчество
+	Student(
+		string,     // Фамилия (обязательно)
+		string,       // Имя (обязательно)
+		string,       // Группа (обязательно)
+		int = 0,          // Возраст (обязательно)
+		string = "",    // Отчество (необязательно)
+		string = "",     // Пол (необязательно, по умолчанию "М" или "Ж")
+		string = "",      // Телефон (необязательно)
+		int = 0        // Количество оценок (необязательно)
+	);	//Конструктор с параметрами
+	Student();										//Коснтруктор по умолчанию(без параметров)
+	Student(const Student&) = delete;				//Исключаем конструктор копирования
+	~Student();										//Деструктор
+	//Задающие методы(сеттеры):
+	inline void Set_Last_Name(string);				//Метод изменения значения поля Фамилия
+	inline void Set_Name(string);					//Метод изменения значения поля Имя
+	inline void Set_Middle_Name(string);			//Метод изменения значения поля Отчество
+	inline void Set_Group(string);					//Метод изменения значения поля Группа
+	inline void Set_Age(int);					    //Метод изменения значения поля Возраст
+	inline void Set_Gender(string);					//Метод изменения значения поля Пол
+	inline void Set_Phone(string);					//Метод изменения значения поля Телефон
+	void Set_Grades();								//Метод задания оценок
+	void Set_Console_Input();						//Метод заполнение всего студента с клавиатуры
+	//Получающие методы(геттеры):
+	string Get_Last_Name()const;					//Метод получения значения поля Фамилия
+	string Get_Name()const;							//Метод получения значения поля Имя
+	string Get_Middle_Name()const;					//Метод получения значения поля Отчество
+	string Get_Group() const;						//Метод получения значения поля Группа
+	int Get_Age() const;							//Метод получения значения поля Возраст
+	string Get_Gender() const;						//Метод получения значения поля Пол
+	string Get_Phone() const;						//Метод получения значения поля Телефон
+	inline int Get_ID()const;						//Метод получения значения поля ID
+	static int Get_Count();							//Статический метод получения текущего кол-ва студентов(объектов класса Student)
+	const int* Get_Grades()const;					//Метод получения адреса массива оценок, без возможности их изменения
+	inline float Get_GPA()const;					//Метод получения знчения среднегого балла студента
+	void Show()const;								//Метод вывода данных о студенте на экран
+};
